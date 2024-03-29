@@ -12,7 +12,7 @@ class QuestionController extends Controller
 {
     public function getData()
     {
-        $question = Question::all();
+        $question = Question::with('answer')->get();
         if($question) {
             return response()->json([
                 'status' => 200,
@@ -30,8 +30,8 @@ class QuestionController extends Controller
     public function DashboardQuickInfo()
     {
         $question = Question::count();
-        $physics = Question::where('subject','Physics')->count();
-        $chemistry = Question::where('subject','Chemistry')->count();
+        $physics = Question::where('subject', 'Physics')->count();
+        $chemistry = Question::where('subject', 'Chemistry')->count();
         $student = Student::count();
 
         if($question) {
@@ -61,21 +61,21 @@ class QuestionController extends Controller
                 'expiry_date' => 'required',
             ]);
 
-            $question =Question::create([
+            $question = Question::create([
                 'question' => $request->question,
                 'subject' => $request->subject,
                 'status' => $request->status,
                 'expiry_date' => $request->expiry_date
             ]);
 
-            if($question){
+            if($question) {
                 Answer::create([
-                    'question_id'=>$question->id,
-                    'option1'=>$request->option1,
-                    'option2'=>$request->option2,
-                    'option3'=>$request->option3,
-                    'option4'=>$request->option4,
-                    'correct'=>$request->correct
+                    'question_id' => $question->id,
+                    'option1' => $request->option1,
+                    'option2' => $request->option2,
+                    'option3' => $request->option3,
+                    'option4' => $request->option4,
+                    'correct' => $request->correct
                 ]);
                 return response()->json([
                     'status' => 200,
@@ -83,7 +83,7 @@ class QuestionController extends Controller
                 ]);
             }
 
-          
+
         } catch(ValidationException $e) {
             return response()->json([
                 'status' => 404,

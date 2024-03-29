@@ -10,7 +10,7 @@ class Question extends Model
     use HasFactory;
     protected $fillable = ['question','subject','status','expiry_date'];
 
-    public function question(){
+    public function answer(){
         return $this->hasMany(Answer::class);
     }
 }
