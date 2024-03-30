@@ -29,7 +29,6 @@ Route::post('login', [UserController::class,'login']);
 Route::prefix('question')->group(function () {
     Route::get('/', [QuestionController::class,'getData']);
     Route::post('/', [QuestionController::class,'store']);
-    Route::get('/{id}', [QuestionController::class,'edit']);
     Route::put('/{id}', [QuestionController::class,'update']);
     Route::delete('/{id}', [QuestionController::class,'delete']);
     Route::get('/quick-info/dashboardQuickInfo', [QuestionController::class,'DashboardQuickInfo']);

@@ -91,4 +91,78 @@ class QuestionController extends Controller
             ]);
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'question' => 'required',
+                'subject' => 'required',
+                'status' => 'required',
+                'expiry_date' => 'required',
+            ]);
+
+
+            $question = Question::find($id);
+            $question->update([
+                'question' => $request->question,
+                'subject' => $request->subject,
+                'status' => $request->status,
+                'expiry_date' => $request->expiry_date
+            ]);
+
+            if($question) {
+                $answer = Answer::where('question_id', $id)->first();
+                if($answer) {
+                    $answer->update([
+                        'question_id' => $id,
+                        'option1' => $request->option1,
+                        'option2' => $request->option2,
+                        'option3' => $request->option3,
+                        'option4' => $request->option4,
+                        'correct' => $request->correct
+                    ]);
+                } else {
+                    Answer::create([
+                        'question_id' => $id,
+                        'option1' => $request->option1,
+                        'option2' => $request->option2,
+                        'option3' => $request->option3,
+                        'option4' => $request->option4,
+                        'correct' => $request->correct
+                    ]);
+                }
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Question Updated Successully!!!'
+                ]);
+            }
+
+
+        } catch(ValidationException $e) {
+            return response()->json([
+                'status' => 404,
+                'errors' => $e->validator->getMessageBag()->toArray()
+            ]);
+        }
+    }
+
+    public function delete($id)
+    {
+        $question = Question::find($id);
+        if($question) {
+            $question->delete();
+            $question->answer()->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Question Deleted Successully!!!'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'errors' => "Data Not Found"
+            ]);
+        }
+    }
 }
